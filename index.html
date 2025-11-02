@@ -25,7 +25,7 @@
     .header {
       text-align: center;
       font-weight: bold;
-      margin-bottom: opx;
+      margin-bottom: 0px;
       padding-top: 10px;
     }
     .header .title {
@@ -85,6 +85,9 @@
       border: none;
       border-radius: 4px;
     }
+    .form button:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -95,7 +98,7 @@
       <div class="subtitle">MADHYA PRADESH GRAMIN BANK</div>
     </div>
     <img src="" class="photo" id="photoView" alt="Customer Photo">
-     <div class="details">
+    <div class="details">
       <div><b>CIF No:</b> <span id="cifView">XXXXXXXXXXX</span></div>
       <div><b>Account No:</b> <span id="accView">XXXXXXXXXXX</span></div>
       <div><b>IFSC Code:</b> <span id="ifscView">XXXX000000</span></div>
@@ -123,12 +126,15 @@
     <label>Upload Photo</label>
     <input type="file" id="photo" accept="image/*">
     <button id="updateBtn">Update Preview</button>
-    <button id="downloadBtn">Download Card</button>
+    <button id="downloadBtn">Download Card (PDF)</button>
   </div>
 
+  <!-- Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script>
-   const cif = document.getElementById('cif');
+    const cif = document.getElementById('cif');
     const acc = document.getElementById('acc');
     const ifsc = document.getElementById('ifsc');
     const name = document.getElementById('name');
@@ -144,6 +150,7 @@
     const pinView = document.getElementById('pinView');
     const photoView = document.getElementById('photoView');
 
+    // Update preview
     document.getElementById('updateBtn').addEventListener('click', () => {
       cifView.textContent = cif.value;
       accView.textContent = acc.value;
@@ -153,7 +160,7 @@
       pinView.textContent = pin.value;
     });
 
-    // Photo upload preview
+    // Photo upload
     photo.addEventListener('change', function() {
       const file = this.files[0];
       if (file) {
@@ -165,15 +172,36 @@
       }
     });
 
-    document.getElementById('downloadBtn').addEventListener('click', () => {
-      html2canvas(document.getElementById('idCard')).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'idcard.png';
-        link.href = canvas.toDataURL();
-        link.click();
+    // PDF download
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      const { jsPDF } = window.jspdf;
+      const card = document.getElementById('idCard');
+
+      // Wait for fonts/images to load
+      await document.fonts?.ready.catch(() => {});
+
+      const canvas = await html2canvas(card, {
+        scale: 3, // High quality
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#ffffff'
       });
+
+      const imgData = canvas.toDataURL('image/png', 1.0);
+
+      // PAN card size in mm
+      const cardWidthMM = 85.6;
+      const cardHeightMM = 53.98;
+
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: [cardWidthMM, cardHeightMM]
+      });
+
+      pdf.addImage(imgData, 'PNG', 0, 0, cardWidthMM, cardHeightMM);
+      pdf.save('MPGB-ID-Card.pdf');
     });
   </script>
 </body>
 </html>
-
