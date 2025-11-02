@@ -1,132 +1,218 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MPGB Kiosk Identity Card</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    .card {
-      width: 350px;
-      border: 1px solid #0a0a0a;
-      border-radius: 11px;
-      background: #ffffff;
-      padding: 11px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      position: relative;
-    }
-    .header {
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 0px;
-      padding-top: 10px;
-    }
-    .header .title {
-      font-size: 13px;
-    }
-    .header .subtitle {
-      font-size: 12px;
-    }
-    .logo {
-      position: absolute;
-      top: 10px;
-      left: 15px;
-      width: 50px;
-      height: 50px;
-    }
-    .photo {
-      position: absolute;
-      top: 90px; 
-      right: 29px;
-      width: 80px;
-      height: 100px;
-      border: 1px solid #000;
-      object-fit: cover;
-    }
-    .details {
-      margin-top: 40px;
-      font-size: 12px;
-      line-height: 1.4;
-    }
-    .form {
-      margin-top: 25px;
-      width: 380px;
-      background: #fff;
-      padding: 10px;
-      border: 1px solid #ffffff;
-      border-radius: 8px;
-    }
-    .form label {
-      font-size: 12px;
-      display: block;
-      margin-top: 8px;
-    }
-    .form input, .form textarea {
-      width: 100%;
-      padding: 6px;
-      margin-top: 4px;
-      font-size: 12px;
-    }
-    .form button {
-      margin-top: 10px;
-      padding: 8px;
-      width: 100%;
-      font-size: 14px;
-      cursor: pointer;
-      background: #333;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-    }
-    .form button:hover {
-      background: #0056b3;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MPGB - Premium ID Card | Satyam Ediz</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --card-w: 350px; /* visual preview width (px) — adjust if you want larger preview */
+    --card-h: 210px; /* visual preview height (px) */
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Roboto',sans-serif;
+    background:
+      radial-gradient(800px 400px at 10% 10%, rgba(123,47,247,0.06), transparent 8%),
+      radial-gradient(700px 300px at 90% 90%, rgba(42,245,152,0.04), transparent 10%),
+      linear-gradient(180deg,#071020 0%, #0f1724 100%);
+    color:#e6eef8;
+    display:flex;
+    align-items:flex-start;
+    gap:28px;
+    padding:28px;
+    justify-content:center;
+  }
+
+  .wrap{
+    width:1100px;
+    max-width:100%;
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:28px;
+    align-items:start;
+  }
+
+  .panel{
+    padding:22px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .hero{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+  .logo-sm{width:64px;height:64px;border-radius:10px;overflow:hidden;background:#fff}
+  .hero h1{margin:0;font-family:'Poppins',serif;font-size:20px}
+  .hero p{margin:4px 0 0 0;color:#b7c7df;font-size:13px}
+
+  .controls{display:grid;gap:10px}
+  label{font-size:13px;color:#cbd7f0}
+  input[type="text"], textarea { width:100%; padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); color:inherit; font-size:13px;}
+  textarea{min-height:64px; resize:vertical}
+
+  .row{display:flex;gap:10px;align-items:center}
+  .small{width:140px}
+  .btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:linear-gradient(90deg,#7b2ff7,#2af598);color:#031024;padding:10px 14px;border-radius:10px;border:none;font-weight:600}
+  .btn.ghost{ background:transparent;border:1px solid rgba(255,255,255,0.06);color:#cfe8ff;padding:9px 12px}
+
+  /* PREVIEW */
+  .preview-wrap{display:flex;flex-direction:column;gap:12px;align-items:center}
+  .card-preview{
+    width:var(--card-w);
+    height:var(--card-h);
+    border-radius:10px;
+    position:relative;
+    overflow:hidden;
+    padding:12px;
+    background:#ffffff; /* <-- ONLY CARD IS WHITE */
+    color:#0b1220;      /* dark text for card */
+    border:1px solid #d3d7db;
+    box-shadow: 0 8px 20px rgba(3,12,23,0.15);
+    transform-origin:center; transition:transform .3s ease;
+  }
+  .card-preview:hover{ transform:translateY(-6px) }
+  /* Logo fixed left (no upload) */
+  .card-logo{position:absolute;left:14px;top:14px;width:60px;height:60px;border-radius:6px;overflow:hidden;background:#fff;border:1px solid #ddd}
+  .card-logo img{width:100%;height:100%;object-fit:cover}
+
+  /* Top text centered (like old card) */
+  .card-top{ text-align:center;padding-top:8px }
+  .card-top .t1{font-family:'Poppins',sans-serif;font-weight:600;font-size:14px}
+  .card-top .t2{font-size:11px;color:#333;margin-top:2px}
+
+  /* Photo on right but lower (old-card style) */
+  .card-photo{ position:absolute; right:12px; top:74px; width:84px; height:96px; border:1px solid #111; overflow:hidden; border-radius:4px; background:#eee }
+  .card-photo img{ width:100%; height:100%; object-fit:cover }
+
+  .card-body{ margin-top:18px; padding-right:110px; font-size:12px; line-height:1.3; color:#222 }
+  .card-body b{ color:#111; font-weight:600 }
+
+  /* footer line on card */
+  .card-foot{ position:absolute; left:12px; bottom:10px; right:12px; font-size:10px; color:#444; text-align:center }
+
+  footer{ margin-top:18px; color:#9fb8e6; font-size:13px; text-align:center }
+  .footer-brand{ font-weight:700; color:#cfe8ff }
+
+  @media (max-width:980px){
+    .wrap{grid-template-columns:1fr; padding-bottom:40px}
+    .preview-wrap{order:-1;align-items:center}
+  }
+</style>
 </head>
 <body>
-  <div class="card" id="idCard">
-    <img src="Logo.png" class="logo" id="logoView" alt="Bank Logo">
-    <div class="header">
-      <div class="title">MPGB-KIOSK BANKING</div>
-      <div class="subtitle">MADHYA PRADESH GRAMIN BANK</div>
-    </div>
-    <img src="" class="photo" id="photoView" alt="Customer Photo">
-    <div class="details">
-      <div><b>CIF No:</b> <span id="cifView">XXXXXXXXXXX</span></div>
-      <div><b>Account No:</b> <span id="accView">XXXXXXXXXXX</span></div>
-      <div><b>IFSC Code:</b> <span id="ifscView">XXXX000000</span></div>
-      <div><b>Customer Name:</b> <span id="nameView">Your Name</span></div>
-      <div><b>Address:</b> <span id="addrView">Your Address</span></div>
-      <div><b>Pin Code:</b> <span id="pinView">000000</span></div>
-      <div><b>KO Name:</b> Sanjay Lodhi</div>
-      <div><b>KO Location:</b> Harira</div>
-    </div>
-  </div>
+  <div class="wrap">
+    <!-- LEFT CONTROLS -->
+    <div class="panel">
+      <div class="hero">
+        <div class="logo-sm"><img id="logoTiny" src="Logo.png" alt="Logo" style="width:100%;height:100%;object-fit:cover"></div>
+        <div>
+          <h1>MPGB - Kiosk ID Card</h1>
+          <p>Premium editable ID card generator —
+        </div>
+      </div>
 
-  <div class="form">
-    <label>CIF Number</label>
-    <input type="text" id="cif">
-    <label>Account Number</label>
-    <input type="text" id="acc">
-    <label>IFSC Code</label>
-    <input type="text" id="ifsc">
-    <label>Customer Name</label>
-    <input type="text" id="name">
-    <label>Address</label>
-    <textarea id="addr"></textarea>
-    <label>Pin Code</label>
-    <input type="text" id="pin">
-    <label>Upload Photo</label>
-    <input type="file" id="photo" accept="image/*">
-    <button id="updateBtn">Update Preview</button>
-    <button id="downloadBtn">Download Card (PDF)</button>
+      <div class="controls">
+        <div class="row">
+          <div style="flex:1">
+            <label>CIF Number</label>
+            <input type="text" id="cif" placeholder="Enter CIF number">
+          </div>
+          <div style="width:140px">
+            <label>Pin Code</label>
+            <input type="text" id="pin" placeholder="000000">
+          </div>
+        </div>
+
+        <div class="row">
+          <div style="flex:1">
+            <label>Account Number</label>
+            <input type="text" id="acc" placeholder="Account number">
+          </div>
+          <div style="width:140px">
+            <label>IFSC</label>
+            <input type="text" id="ifsc" placeholder="IFSC CODE">
+          </div>
+        </div>
+
+        <div>
+          <label>Customer Name</label>
+          <input type="text" id="name" placeholder="Full name">
+        </div>
+
+        <div>
+          <label>Address</label>
+          <textarea id="addr" placeholder="Address, City, District"></textarea>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Upload Photo</label>
+            <input type="file" id="photo" accept="image/*">
+          </div>
+          <!-- removed logo upload per request -->
+          <div style="display:flex;align-items:center;gap:6px"><small style="color:#9fb8e6">Logo fixed (Logo.png)</small></div>
+        </div>
+
+        <div style="margin-top:6px">
+          <button class="btn" id="updateBtn">Update Preview</button>
+          <button class="btn ghost" id="resetBtn">Reset</button>
+        </div>
+
+        <div style="margin-top:12px;color:#a9c6f0;font-size:13px">
+          Tip: Use high-res photos (≥300px) for best print/PDF output.
+        </div>
+
+        <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+          <div style="color:#cfe8ff">Output on A4 (card placed slightly up)</div>
+          <div>
+            <button class="btn" id="downloadBtn">Download PDF</button>
+          </div>
+        </div>
+
+      </div>
+
+      <footer style="margin-top:14px">
+        <span>All rights reserved | Designed by <span class="footer-brand">Satyam Ediz</span> 💎</span>
+      </footer>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-wrap">
+      <div id="cardPreview" class="card-preview">
+        <div class="card-logo"><img src="Logo.png" alt="Logo" id="logoViewImg"></div>
+
+        <div class="card-top">
+          <div class="t1">MPGB-KIOSK BANKING</div>
+          <div class="t2">MADHYA PRADESH GRAMIN BANK</div>
+        </div>
+
+        <div class="card-photo" id="photoView">
+          <img src="https://via.placeholder.com/150x200?text=Photo" id="photoImg" alt="photo">
+        </div>
+
+        <div class="card-body" id="detailsBlock">
+          <div><b>CIF No:</b> <span id="cifView">XXXXXXXXXXX</span></div>
+          <div><b>Account No:</b> <span id="accView">XXXXXXXXXXX</span></div>
+          <div><b>IFSC Code:</b> <span id="ifscView">XXXX000000</span></div>
+          <div><b>Customer Name:</b> <span id="nameView">Your Name</span></div>
+          <div><b>Address:</b> <span id="addrView">Your Address</span></div>
+          <div><b>Pin Code:</b> <span id="pinView">000000</span></div>
+          <div><b>KO Name:</b> <span id="pinView">Sanjay Lodhi</span></div>
+          <div><b>KO Location:</b> <span id="pinView">Harira</span></div>
+        </div>
+
+      </div>
+
+      <div style="width:100%;text-align:center;margin-top:10px;color:#a9c6f0;font-size:13px">Preview (hover card for lift)</div>
+    </div>
   </div>
 
   <!-- Libraries -->
@@ -134,74 +220,96 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    const cif = document.getElementById('cif');
-    const acc = document.getElementById('acc');
-    const ifsc = document.getElementById('ifsc');
-    const name = document.getElementById('name');
-    const addr = document.getElementById('addr');
-    const pin = document.getElementById('pin');
-    const photo = document.getElementById('photo');
+    // Elements
+    const cif = document.getElementById('cif'), acc = document.getElementById('acc'),
+          ifsc = document.getElementById('ifsc'), nameEl = document.getElementById('name'),
+          addr = document.getElementById('addr'), pin = document.getElementById('pin'),
+          photo = document.getElementById('photo');
 
-    const cifView = document.getElementById('cifView');
-    const accView = document.getElementById('accView');
-    const ifscView = document.getElementById('ifscView');
-    const nameView = document.getElementById('nameView');
-    const addrView = document.getElementById('addrView');
-    const pinView = document.getElementById('pinView');
-    const photoView = document.getElementById('photoView');
+    const cifView = document.getElementById('cifView'), accView = document.getElementById('accView'),
+          ifscView = document.getElementById('ifscView'), nameView = document.getElementById('nameView'),
+          addrView = document.getElementById('addrView'), pinView = document.getElementById('pinView');
 
-    // Update preview
+    const photoImg = document.getElementById('photoImg');
+    const logoViewImg = document.getElementById('logoViewImg');
+
+    function updatePreview(){
+      cifView.textContent = cif.value || 'XXXXXXXXXXX';
+      accView.textContent = acc.value || 'XXXXXXXXXXX';
+      ifscView.textContent = ifsc.value || 'XXXX000000';
+      nameView.textContent = nameEl.value || 'Your Name';
+      addrView.textContent = (addr.value ? addr.value.replace(/\r?\n/g, ', ') : 'Your Address');
+      pinView.textContent = pin.value || '000000';
+    }
+
+    [cif, acc, ifsc, nameEl, addr, pin].forEach(i => i.addEventListener('input', updatePreview));
+
+    // Photo upload preview (photo only)
+    photo.addEventListener('change', function(){
+      const f = this.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = e => { photoImg.src = e.target.result; };
+      reader.readAsDataURL(f);
+    });
+
     document.getElementById('updateBtn').addEventListener('click', () => {
-      cifView.textContent = cif.value;
-      accView.textContent = acc.value;
-      ifscView.textContent = ifsc.value;
-      nameView.textContent = name.value;
-      addrView.textContent = addr.value.replace(/\r?\n/g, ', ');
-      pinView.textContent = pin.value;
+      updatePreview();
+      // small highlight
+      document.getElementById('cardPreview').animate([{ transform:'scale(1)' },{ transform:'scale(1.02)' },{ transform:'scale(1)'}], { duration: 260 });
     });
 
-    // Photo upload
-    photo.addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          photoView.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      cif.value=''; acc.value=''; ifsc.value=''; nameEl.value=''; addr.value=''; pin.value='';
+      photo.value = null;
+      photoImg.src = 'https://via.placeholder.com/150x200?text=Photo';
+      updatePreview();
     });
 
-    // PDF download
+    // Download A4 with card placed slightly up
     document.getElementById('downloadBtn').addEventListener('click', async () => {
-      const { jsPDF } = window.jspdf;
-      const card = document.getElementById('idCard');
+      updatePreview();
+      // wait fonts/images
+      await document.fonts?.ready.catch(()=>{});
 
-      // Wait for fonts/images to load
-      await document.fonts?.ready.catch(() => {});
+      const cardEl = document.getElementById('cardPreview');
 
-      const canvas = await html2canvas(card, {
-        scale: 3, // High quality
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#ffffff'
-      });
+      // Render at high scale for crispness
+      const scale = 3;
+      // force white background for accurate PDF
+      const prevBg = cardEl.style.backgroundColor;
+      cardEl.style.backgroundColor = '#ffffff';
+
+      const canvas = await html2canvas(cardEl, { scale, useCORS:true, allowTaint:false, backgroundColor: null });
+
+      // restore
+      cardEl.style.backgroundColor = prevBg || '';
 
       const imgData = canvas.toDataURL('image/png', 1.0);
 
-      // PAN card size in mm
-      const cardWidthMM = 85.6;
-      const cardHeightMM = 53.98;
+      // A4 dimensions in mm
+      const a4_w = 210;
+      const a4_h = 297;
 
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: [cardWidthMM, cardHeightMM]
-      });
+      // card size in mm (PAN card size)
+      const card_w_mm = 85.6;
+      const card_h_mm = 53.98;
 
-      pdf.addImage(imgData, 'PNG', 0, 0, cardWidthMM, cardHeightMM);
+      // position: center horizontally, slightly up vertically (yOffset in mm)
+      const x_mm = (a4_w - card_w_mm) / 2;
+      const y_mm = 25; // 25 mm from top (slightly up). Adjust if needed.
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+      // convert canvas px to mm scale — but jsPDF addImage accepts mm dims so pass intended card size
+      pdf.addImage(imgData, 'PNG', x_mm, y_mm, card_w_mm, card_h_mm, undefined, 'FAST');
+
       pdf.save('MPGB-ID-Card.pdf');
     });
+
+    // initial
+    updatePreview();
   </script>
 </body>
 </html>
