@@ -128,6 +128,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
+   const cif = document.getElementById('cif');
     const acc = document.getElementById('acc');
     const ifsc = document.getElementById('ifsc');
     const name = document.getElementById('name');
@@ -135,6 +136,7 @@
     const pin = document.getElementById('pin');
     const photo = document.getElementById('photo');
 
+    const cifView = document.getElementById('cifView');
     const accView = document.getElementById('accView');
     const ifscView = document.getElementById('ifscView');
     const nameView = document.getElementById('nameView');
@@ -143,6 +145,7 @@
     const photoView = document.getElementById('photoView');
 
     document.getElementById('updateBtn').addEventListener('click', () => {
+      cifView.textContent = cif.value;
       accView.textContent = acc.value;
       ifscView.textContent = ifsc.value;
       nameView.textContent = name.value;
@@ -173,3 +176,4 @@
   </script>
 </body>
 </html>
+
